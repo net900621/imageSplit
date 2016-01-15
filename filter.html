@@ -1,0 +1,42 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="utf-8"/>
+</head>
+<body>
+<img src="" id='stuPic' style="display:none">
+<input type="file" id="loadFile">
+<canvas id="canvas" width="600" height="600"></canvas>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    function grey(image){
+        var imagedata = context.getImageData(0,0,image.width,image.height);
+        var imagedata1 = context.createImageData(image.width,image.height);
+        var pix = imagedata.data;
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+        var grayscale = pix[i] * .3 + pix[i+1] * .59 + pix[i+2] * .11;
+        pix[i] = grayscale;     // red
+        pix[i+1] = grayscale;     // green
+        pix[i+2] = grayscale;     // blue
+        // alpha
+        }
+        context.putImageData(imagedata, 0, 0);
+    }
+    $("#loadFile").change(function(){
+        var file = $(this)[0].files[0];
+        var fReader = new FileReader();
+        fReader.readAsDataURL(file);
+        fReader.onload = function (e){
+            $("#stuPic").attr("src", this.result).load(function(){
+                context.drawImage(this,0,0);
+                var s = context.getImageData(100,50,350,150);
+                grey(this);
+                context.putImageData(s,100,50);
+            });
+        };
+    });
+</script>
+</body>
+</html>
